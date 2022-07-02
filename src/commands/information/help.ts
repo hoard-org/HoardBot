@@ -13,10 +13,7 @@ export default class Ping extends SlashCommand {
           required: false,
           type: OptionType.STRING,
           description: 'Look at information for a specific command.',
-          choices: [
-            { name: 'help', value: 'help' },
-            { name: 'ping', value: 'ping' }
-          ]
+          choices: []
         }
       ],
       category: 'information'
