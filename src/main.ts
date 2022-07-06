@@ -7,5 +7,6 @@ await (new Client(`Bot ${process.env['DISCORD_TOKEN']}`, {
   defaultImageFormat: 'png',
   defaultImageSize: 1024,
   restMode: true,
-  intents: []
+  intents: ['all'],
+  getAllUsers: true
 })).start();
