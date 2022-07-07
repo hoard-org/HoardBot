@@ -29,7 +29,7 @@ export default class InteractionCreateEvent extends Event {
 
   async handleCommandInteraction(interaction: CommandInteraction) {
     const command = this.client.localCommands.get(interaction.data.name);  
-    const res = command?.run(interaction);
+    const res = await command?.run(interaction);
     if(res) {
       if(typeof res === 'string') {
         interaction.createMessage({flags: 64, content: res});

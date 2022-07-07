@@ -1,5 +1,5 @@
 import Client from './client.js';
-import { CommandInteraction, MessageContent } from 'eris';
+import { AdvancedMessageContent, CommandInteraction, MessageContent } from 'eris';
 
 export type SlashCommandData = {
   name: string,
@@ -79,7 +79,7 @@ export abstract class SlashCommand {
     };
   }
 
-  abstract run(interaction: CommandInteraction): MessageContent;
+  abstract run(interaction: CommandInteraction): MessageContent | AdvancedMessageContent| Promise<MessageContent | AdvancedMessageContent>;
 }
 
 export type ExtendedSlashCommand = new (client: Client) => SlashCommand;
