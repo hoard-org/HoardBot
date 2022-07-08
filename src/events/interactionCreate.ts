@@ -28,24 +28,28 @@ export default class InteractionCreateEvent extends Event {
 
 
   async handleCommandInteraction(interaction: CommandInteraction) {
-    const command = this.client.localCommands.get(interaction.data.name);  
-    const res = await command?.run(interaction);
-    if(res) {
-      if(typeof res === 'string') {
-        interaction.createMessage({flags: 64, content: res});
-      }
-      else if(typeof res === 'object') {
-        if(res?.embeds) {
-          for(const [index, embed] of res.embeds.entries()) {
-            if(!embed.color) {
-              res.embeds[index].color = 12473343;
+    try {
+      const command = this.client.localCommands.get(interaction.data.name);  
+      const res = await command?.run(interaction);
+      if(res) {
+        if(typeof res === 'string') {
+          interaction.createMessage({flags: 64, content: res});
+        }
+        else if(typeof res === 'object') {
+          if(res?.embeds) {
+            for(const [index, embed] of res.embeds.entries()) {
+              if(!embed.color) {
+                res.embeds[index].color = 12473343;
+              }
             }
           }
+          interaction.createMessage({flags: 64, ...res});
         }
-        interaction.createMessage({flags: 64, ...res});
       }
     }
-
+    catch(err) {
+      console.error(err);
+    }
   }
 
   async handlePingInteraction(interaction: PingInteraction) {
