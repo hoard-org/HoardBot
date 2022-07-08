@@ -1,5 +1,5 @@
-import { SlashCommand, OptionType } from '../../structs/command.js';
-import Client from '../../structs/client.js';
+import { SlashCommand, OptionType } from '../../../structs/command.js';
+import Client from '../../../structs/client.js';
 import { CommandInteraction, TextableChannel } from 'eris';
 
 export default class Ping extends SlashCommand {

@@ -7,6 +7,7 @@ export default class Ping extends SlashCommand {
     super({
       name: 'avatar',
       description: 'View the avatar of a person',
+      category: 'information',
       options: [
         {
           type: 6,

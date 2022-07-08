@@ -1,6 +1,6 @@
 import { Client } from 'eris';
 import logger from '../util/logger.js';
-import { loadFiles } from '../util/loadFiles.js';
+import { loadFiles } from '../util/index.js';
 import { ExtendedEvent } from './event.js';
 import {SlashCommand, ExtendedSlashCommand } from './command.js';
 
