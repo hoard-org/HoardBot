@@ -2,40 +2,7 @@ import { SlashCommand, OptionType } from '../../../structs/command.js';
 import Client from '../../../structs/client.js';
 import { CommandInteraction, InteractionDataOptions, InteractionDataOptionsString } from 'eris';
 import fetch from 'node-fetch';
-
-type AccountData = {
-  status: 200 | 404,
-  message?: string,
-  data?: {
-    puuid: string,
-    region: string,
-    account_level: number,
-    name: string,
-    tag: string,
-    card: {
-      small: string,
-      large: string,
-      wide: string,
-      id: string
-    },
-    last_update: string
-  }
-};
-
-type MmrData = {
-  status: 200 | 404,
-  message?: string,
-  data?: {
-    currenttier: number,
-    currenttierpatched: string,
-    ranking_in_tier: number,
-    mmr_change_to_last_game: number,
-    elo: number,
-    name: string,
-    tag: string,
-    old: boolean
-  }
-};
+import { ValorantAccountData, ValorantMmrData } from '../../../types/valorant.js';
 
 export default class ValStats extends SlashCommand {
   constructor(public client: Client) {
@@ -125,12 +92,12 @@ export default class ValStats extends SlashCommand {
 
   }
 
-  async fetchAccount(username: string, tag: string): Promise<AccountData> {
-    return await fetch(`https://api.henrikdev.xyz/valorant/v1/account/${username}/${tag}`).then((res) => res.json()) as AccountData;
+  async fetchAccount(username: string, tag: string): Promise<ValorantAccountData> {
+    return await fetch(`https://api.henrikdev.xyz/valorant/v1/account/${username}/${tag}`).then((res) => res.json()) as ValorantAccountData;
   };
 
-  async fetchMMR(username: string, tag: string, region: string = 'na'): Promise<MmrData> {
-    return await fetch(`https://api.henrikdev.xyz/valorant/v1/mmr/${region}/${username}/${tag}`).then((res) => res.json()) as MmrData;
+  async fetchMMR(username: string, tag: string, region: string = 'na'): Promise<ValorantMmrData> {
+    return await fetch(`https://api.henrikdev.xyz/valorant/v1/mmr/${region}/${username}/${tag}`).then((res) => res.json()) as ValorantMmrData;
   }
 
 }   
