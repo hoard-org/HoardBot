@@ -57,7 +57,11 @@ export default class ValStats extends SlashCommand {
     }
 
     if (accountDataStatus !== 200 || mmrDataStatus !== 200) {
-      return 'An error occured, this profile is likely private.';
+      return 'An error occured, are you sure this account exists?';
+    }
+
+    if(accountData && accountData.name === null) {
+      return 'This profile is private.';
     }
 
     return {

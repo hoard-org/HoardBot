@@ -28,12 +28,13 @@ export default class InteractionCreateEvent extends Event {
 
 
   async handleCommandInteraction(interaction: CommandInteraction) {
+    await interaction.acknowledge();
     try {
       const command = this.client.localCommands.get(interaction.data.name);  
       const res = await command?.run(interaction);
       if(res) {
         if(typeof res === 'string') {
-          interaction.createMessage({flags: 64, content: res});
+          interaction.createFollowup({content: res});
         }
         else if(typeof res === 'object') {
           if(res?.embeds) {
@@ -43,7 +44,7 @@ export default class InteractionCreateEvent extends Event {
               }
             }
           }
-          interaction.createMessage({flags: 64, ...res});
+          interaction.createFollowup(res);
         }
       }
     }
