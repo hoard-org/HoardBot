@@ -83,7 +83,7 @@ export default class ValStats extends SlashCommand {
             url: accountData!.card.wide
           },
           footer: {
-            text: `Last updated ${accountData!.last_update} || Region ${region}`
+            text: `Last updated ${accountData!.last_update} || Region ${region.toUpperCase()}`
           }
         }
       ],
