@@ -60,6 +60,24 @@ export default class guildMemberAdd extends Event {
           .replace('{user}', `<@${member.id}>`)
           .replace('{guild}', guild.name)
       );
+
+      // logger pogger
+      this.client.createMessage(
+        process.env['HRD_LOG_CHANNEL']!,
+        {
+          embeds: [
+            {
+              title: `${member.user.username}#${member.user.discriminator} (${member.id}) joined.`,
+              thumbnail: {
+                url: !member.user?.avatar ? 
+                  member.user?.defaultAvatar : 
+                  member.user?.dynamicAvatarURL()
+              },
+              description: `<t:${Math.floor(member.joinedAt! / 1000)}:F> (<t:${Math.floor(member.joinedAt! / 1000)}:R>)`
+            }
+          ]
+        }
+      );
       member.addRole(process.env['HRD_MEMBER_ROLE']!, 'Automatically added by HoardBot upon joining.')!;   
     }
   }
