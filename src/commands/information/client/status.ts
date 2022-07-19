@@ -34,7 +34,7 @@ export default class Status extends SlashCommand {
             },
             {
               name: 'Uptime',
-              value: parseUptime(this.client.uptime / 1000)
+              value: parseUptime(process.uptime())
             }
           ],
           footer: {
