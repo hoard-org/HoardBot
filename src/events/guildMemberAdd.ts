@@ -57,8 +57,8 @@ export default class guildMemberAdd extends Event {
       this.client.createMessage(
         process.env['HRD_JOIN_LEAVE']!, 
         Messages[Math.floor(Math.random() * Messages.length)]
-          .replace('{user}', `<@${member.id}>`)
-          .replace('{guild}', guild.name)
+          .replace(/{user}/gi, `<@${member.id}>`)
+          .replace(/{guild}/gi, guild.name)
       );
 
       // logger pogger
@@ -73,7 +73,8 @@ export default class guildMemberAdd extends Event {
                   member.user?.defaultAvatar : 
                   member.user?.dynamicAvatarURL()
               },
-              description: `<t:${Math.floor(member.joinedAt! / 1000)}:F> (<t:${Math.floor(member.joinedAt! / 1000)}:R>)`
+              description: `<t:${Math.floor(member.joinedAt! / 1000)}:F> (<t:${Math.floor(member.joinedAt! / 1000)}:R>)`,
+              color: 12473343
             }
           ]
         }
