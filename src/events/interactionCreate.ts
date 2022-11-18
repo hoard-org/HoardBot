@@ -28,9 +28,10 @@ export default class InteractionCreateEvent extends Event {
 
 
   async handleCommandInteraction(interaction: CommandInteraction) {
-    await interaction.acknowledge();
+    // Hopefully this exists locally, if it doesn't something really bad has happened.
+    const command = this.client.localCommands.get(interaction.data.name);
+    await interaction.acknowledge(command?.localData.ephemeral ? 64 : 0);
     try {
-      const command = this.client.localCommands.get(interaction.data.name);  
       const res = await command?.run(interaction);
       if(res) {
         if(typeof res === 'string') {

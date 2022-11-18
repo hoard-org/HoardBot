@@ -11,7 +11,8 @@ export type SlashCommandConstructor = {
   name: string,
   description?: string,
   options?: OptionData[],
-  category?: string
+  category?: string,
+  ephemeral?: boolean; 
 };
 
 export enum OptionType {
@@ -61,25 +62,27 @@ export type OptionData = {
 
 export abstract class SlashCommand {
   data: SlashCommandData;
-  localData;
+  localData: { category: string; ephemeral: boolean }
   constructor({
     name,
     description,
     options,
-    category = 'miscellaneous'
+    category = 'miscellaneous',
+    ephemeral = false
   }: SlashCommandConstructor) {
     this.data = {
       name,
       description,
-      options,
+      options
     };
 
     this.localData = {
-      category
+      category,
+      ephemeral
     };
   }
 
-  abstract run(interaction: CommandInteraction): MessageContent | AdvancedMessageContent| Promise<MessageContent | AdvancedMessageContent>;
+  abstract run(interaction: CommandInteraction): MessageContent | AdvancedMessageContent | Promise<MessageContent | AdvancedMessageContent>;
 }
 
 export type ExtendedSlashCommand = new (client: Client) => SlashCommand;

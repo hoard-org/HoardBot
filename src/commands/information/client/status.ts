@@ -7,7 +7,8 @@ export default class Status extends SlashCommand {
     super({
       name: 'status',
       description: 'Check the bot\'s status.',
-      category: 'information'
+      category: 'information',
+      ephemeral: true
     });
   }
 

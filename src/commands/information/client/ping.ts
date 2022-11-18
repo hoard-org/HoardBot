@@ -6,7 +6,8 @@ export default class Ping extends SlashCommand {
     super({
       name: 'ping',
       description: 'A basic ping command.',
-      category: 'information'
+      category: 'information',
+      ephemeral: true
     });
   }
 

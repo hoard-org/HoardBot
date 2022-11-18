@@ -16,7 +16,8 @@ export default class Ping extends SlashCommand {
           choices: []
         }
       ],
-      category: 'information'
+      category: 'information',
+      ephemeral: true
     });
   }
 
@@ -60,7 +61,7 @@ export default class Ping extends SlashCommand {
                 }`
               }
             }
-          ]
+          ],
         };
       }
       else {
