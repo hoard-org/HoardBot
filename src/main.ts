@@ -1,12 +1,8 @@
-import dotenv from 'dotenv';
-import Client from './structs/client.js';
-dotenv.config({ path: 'config.env' });
+import { logger } from './util/index.js';
+import Client from './structures/client.js';
 
-await (new Client(`Bot ${process.env['DISCORD_TOKEN']}`, {
-  messageLimit: 100,
-  defaultImageFormat: 'png',
-  defaultImageSize: 1024,
-  restMode: true,
-  intents: ['all'],
-  getAllUsers: true
-})).start();
+import config from './config.js'
+
+logger.info('Starting HoardBot.');
+
+new Client(config.token).start()
