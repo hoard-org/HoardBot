@@ -13,4 +13,4 @@ try {
     process.exit(1);
 }
 
-export default cfg
+export const config: Config = cfg;
