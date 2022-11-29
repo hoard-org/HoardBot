@@ -1,3 +1,5 @@
+import { readFile } from 'fs/promises';
+
 export type Config = {
     token: string;
     developers: string[]
@@ -6,9 +8,10 @@ export type Config = {
 let cfg: Config;
 
 try {
-    // @ts-ignore
-    cfg = (await import('../config.json', { assert: { type: 'json' } })).default;
+    const file = await readFile('./config.json', 'utf-8')
+    cfg = JSON.parse(file)
 } catch (e) {
+    console.error(e);
     console.log('Config invalid or does not exist. Please check.');
     process.exit(1);
 }
