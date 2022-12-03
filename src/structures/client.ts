@@ -1,10 +1,17 @@
 import {
+    ApplicationCommandStructure,
     Client as ErisClient,
     type ClientOptions
 } from "eris";
-import { logger } from "../util/index.js";
+import { loadFiles, logger } from "../util/index.js";
+import { type ExtendedEvent } from "./Event.js";
+import { config } from "../config.js";
+import { Command, ExtendedCommand } from "./Command.js"
 
 export class Client extends ErisClient {
+    developers: string[] = config.developers;
+    localCommands = new Map<string, Command>();
+
     constructor(token: string, options?: ClientOptions) {
         super(token, options)
     }
@@ -18,13 +25,43 @@ export class Client extends ErisClient {
             ?? this.users.find((u) => u.username.toLowerCase() === user.toLowerCase());
     }
 
-    
+    /**
+     * Load all events.
+     */
+    async loadEvents() {
+        const events = await loadFiles<ExtendedEvent>('../events');
+        for (const eventClass of events) {
+            const event = new eventClass(this);
+            // Why not tbh.
+            if (event.once) {
+                this.once(event.name, (...args) => event.run(...args));
+            } else {
+                this.on(event.name, (...args) => event.run(...args));
+            }
+            logger.debug(`Event '${event.name}' loaded successfully.`)
+        }
+    }
+
+    /**
+     * Load all commands.
+     */
+    async loadCommands() {
+        const commands = await loadFiles<ExtendedCommand>('../commands');
+        for (const commandClass of commands) {
+            const command = new commandClass(this);
+            this.localCommands.set(command.data.name, command);
+            logger.debug(`Loaded command '${command.data.name}'.`)
+        }
+    }
+
+
     /**
      * Start the client.
      */
     async start() {
-        logger.info('Initializing Client...')
-
+        logger.debug('Initializing Client...')
+        await this.loadEvents();
+        await this.loadCommands();
         await this.connect();
     }
 }

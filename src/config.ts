@@ -2,7 +2,9 @@ import { readFile } from 'fs/promises';
 
 export type Config = {
     token: string;
-    developers: string[]
+    developers: string[],
+    applicationId: string;
+    publicKey: string;
 }
 
 let cfg: Config;

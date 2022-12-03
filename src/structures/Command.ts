@@ -1,5 +1,5 @@
-import { CommandInteraction } from 'eris';
-import { Client } from '../client.js'
+import { AdvancedMessageContent, CommandInteraction } from 'eris';
+import { Client } from './client.js'
 
 export type SlashCommandData = {
     name: string,
@@ -24,7 +24,7 @@ export enum OptionType {
     MENTIONABLE = 9,
     NUMBER = 10,
     ATTACHMENT = 11
-  }
+}
 
 export enum ChannelTypes {
     GUILD_TEXT = 0,
@@ -39,7 +39,7 @@ export enum ChannelTypes {
     GUILD_STAGE_VOICE = 13,
     GUILD_DIRECTORY = 14,
     GUILD_FORUM = 15
-  }
+}
 
 export type OptionData = {
     type: OptionType,
@@ -63,11 +63,12 @@ export type LocalCommandData = {
     ephemeral: boolean;
 }
 
-// TODO; setup "middleware" so that any DB information can be fetched.
-
-export abstract class Base {
+export abstract class Command {
     data: SlashCommandData;
     localData: LocalCommandData;
+
+    // Should just be used for fetching data, but can be used for anything.
+    middleware?: (...args: unknown[]) => unknown;
 
     constructor({
         name,
@@ -77,15 +78,18 @@ export abstract class Base {
         ephemeral = true
     }: SlashCommandConstructor) {
         this.data = {
-            name, 
-            description, 
+            name,
+            description,
             options
         }
         this.localData = {
-            category, 
-            ephemeral, 
+            category,
+            ephemeral,
             id: `${this.constructor.name}-${name}`
         }
     }
-    abstract run(interaction: CommandInteraction): unknown;
+
+    abstract run(interaction: CommandInteraction): AdvancedMessageContent | Promise<AdvancedMessageContent>;
 }
+
+export type ExtendedCommand = new (client: Client) => Command

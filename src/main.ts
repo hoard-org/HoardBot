@@ -1,8 +1,11 @@
 import { logger } from './util/index.js';
-import { Client } from './structures/client.js';
+import { Client } from './structures/Client.js';
 
 import { config } from './config.js'
 
 logger.info('Starting HoardBot.');
 
-new Client(config.token).start()
+new Client(config.token, { 
+    // I'll add these as I go.
+    intents: [], 
+}).start()
