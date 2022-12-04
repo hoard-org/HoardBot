@@ -68,7 +68,6 @@ export abstract class Command {
     localData: LocalCommandData;
 
     // Should just be used for fetching data, but can be used for anything.
-    middleware?: (...args: unknown[]) => unknown;
 
     constructor({
         name,
@@ -89,7 +88,9 @@ export abstract class Command {
         }
     }
 
-    abstract run(interaction: CommandInteraction): AdvancedMessageContent | Promise<AdvancedMessageContent>;
+    middleware?(interaction: CommandInteraction): unknown
+
+    abstract run(interaction: CommandInteraction, middlewareData?: unknown): AdvancedMessageContent | Promise<AdvancedMessageContent>;
 }
 
 export type ExtendedCommand = new (client: Client) => Command

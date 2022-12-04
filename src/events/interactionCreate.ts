@@ -9,7 +9,6 @@ export default class InteractionEvent extends Event {
     async run(interaction: Interaction) {
         switch (interaction.type) {
             case 1: // Ping
-                logger.debug('Interaction ping has been acknowledged.')
                 this.doPing(interaction as PingInteraction);
                 break;
             case 2: // Application Command
@@ -38,9 +37,27 @@ export default class InteractionEvent extends Event {
                 interaction.createFollowup('An unexpected error has occured! Please contact `Olykir#0193`.');
             }
             await interaction.acknowledge(command!.localData.ephemeral ? 64 : 0);
+            let middlewareData: unknown;
+            if(command?.middleware) {
+                middlewareData = await command.middleware(interaction);
+            }
+
             // No reason why there shouldn't be a run function.
-            const res = await command!.run(interaction);
-            console.log(res);
+            const res = await command!.run(interaction, middlewareData);
+
+            // Set embed color, if no color is given. 12386559
+            if(res.embed && !res.embed.color) {
+                res.embed.color = 12386559
+            }   
+            if(res.embeds) {
+                for(const embed of res.embeds) {
+                    const index = res.embeds.indexOf(embed);
+                    if(!embed.color) {
+                        res.embeds[index].color = 12386559
+                    }
+                }
+            }
+
             interaction.createFollowup(res);
         } catch (e) {
             // just in case.
@@ -52,5 +69,7 @@ export default class InteractionEvent extends Event {
 
     doComponent() { } // TODO;
 
-    doAutocomplete(interaction: AutocompleteInteraction) { } // TODO;
+    doAutocomplete(interaction: AutocompleteInteraction) {
+        console.log(interaction)
+     } // TODO;
 }
