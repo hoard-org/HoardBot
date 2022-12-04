@@ -4,7 +4,7 @@ import { logger } from "../util/index.js";
 
 export default class InteractionEvent extends Event {
     name = 'interactionCreate';
-    once = true;
+    once = false;
 
     async run(interaction: Interaction) {
         switch (interaction.type) {
@@ -37,22 +37,18 @@ export default class InteractionEvent extends Event {
                 interaction.createFollowup('An unexpected error has occured! Please contact `Olykir#0193`.');
             }
             await interaction.acknowledge(command!.localData.ephemeral ? 64 : 0);
-            let middlewareData: unknown;
-            if(command?.middleware) {
-                middlewareData = await command.middleware(interaction);
-            }
 
             // No reason why there shouldn't be a run function.
-            const res = await command!.run(interaction, middlewareData);
+            const res = await command!.run(interaction);
 
             // Set embed color, if no color is given. 12386559
-            if(res.embed && !res.embed.color) {
+            if (res.embed && !res.embed.color) {
                 res.embed.color = 12386559
-            }   
-            if(res.embeds) {
-                for(const embed of res.embeds) {
+            }
+            if (res.embeds) {
+                for (const embed of res.embeds) {
                     const index = res.embeds.indexOf(embed);
-                    if(!embed.color) {
+                    if (!embed.color) {
                         res.embeds[index].color = 12386559
                     }
                 }
@@ -69,7 +65,5 @@ export default class InteractionEvent extends Event {
 
     doComponent() { } // TODO;
 
-    doAutocomplete(interaction: AutocompleteInteraction) {
-        console.log(interaction)
-     } // TODO;
+    doAutocomplete(interaction: AutocompleteInteraction) { } // TODO;
 }

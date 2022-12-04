@@ -5,6 +5,7 @@ export type SlashCommandData = {
     name: string,
     description?: string;
     options?: OptionData[],
+    commandId?: string
 }
 
 export type SlashCommandConstructor = SlashCommandData & {
@@ -65,10 +66,7 @@ export type LocalCommandData = {
 
 export abstract class Command {
     data: SlashCommandData;
-    localData: LocalCommandData;
-
-    // Should just be used for fetching data, but can be used for anything.
-
+    localData!: LocalCommandData;
     constructor({
         name,
         description,
@@ -87,9 +85,6 @@ export abstract class Command {
             id: `${this.constructor.name}-${name}`
         }
     }
-
-    middleware?(interaction: CommandInteraction): unknown
-
     abstract run(interaction: CommandInteraction, middlewareData?: unknown): AdvancedMessageContent | Promise<AdvancedMessageContent>;
 }
 

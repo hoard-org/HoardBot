@@ -1,5 +1,5 @@
-import { Client } from "../../structures/client.js";
-import { Command } from "../../structures/Command.js";
+import { Client } from "../../../structures/client.js";
+import { Command } from "../../../structures/Command.js";
 
 export default class extends Command {
     constructor(public client: Client) {

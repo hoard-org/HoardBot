@@ -5,7 +5,9 @@ import { config } from './config.js'
 
 logger.info('Starting HoardBot.');
 
-new Client(config.token, { 
+new Client(config.token, {
     // I'll add these as I go.
-    intents: [], 
+    intents: [],
+    defaultImageFormat: 'png',
+    defaultImageSize: 1024
 }).start()

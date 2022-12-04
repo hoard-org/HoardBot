@@ -1,6 +1,6 @@
 import { CommandInteraction, EmbedField, InteractionDataOptionsString } from "eris";
-import { Client } from "../../structures/Client.js";
-import { Command, OptionType } from "../../structures/Command.js";
+import { Client } from "../../../structures/Client.js";
+import { Command, OptionType } from "../../../structures/Command.js";
 
 export default class Help extends Command {
     // Just store fields here so we don't have to keep remaking them.
@@ -15,7 +15,7 @@ export default class Help extends Command {
             options: [
                 {
                     name: 'command',
-                    description: 'todo',
+                    description: 'Command you need information for.',
                     required: false,
                     autocomplete: false,
                     type: OptionType.STRING,
@@ -45,7 +45,7 @@ export default class Help extends Command {
         }
 
 
-        if (data.options![0]) {
+        if (data.options) {
             const command = this.client.localCommands.get((data.options![0] as InteractionDataOptionsString).value);
             // No reason this shouldn't exist but might as well check.
             if (!command) {
@@ -54,18 +54,19 @@ export default class Help extends Command {
 
             return {
                 embed: {
-                    title: command?.data.name,
+                    title: `</${command?.data.name}:${command.data.commandId}>`,
                     fields: [
                         {
                             name: 'Description',
                             value: command.data.description ?? 'N\\A'
                         },
-                        this.data.options ? {
-                            name: 'Usage',
-                            value: this.data.options.map((option) => {
-                                // todo;
-                            }).join(' ')
-                        } : undefined
+                        // Might add usage in later, but it's kind of ugly.
+                        // {
+                        //     name: 'Usage',
+                        //     value: `</${command.data.name}:${command.data.commandId}>${command.data.options ? ` ${command.data.options.map((option) => `<${option.name}>`).join(' ')
+                        //             }\n< > = Optional [ ] = Required` : ''
+                        //         }`
+                        // }
                     ],
                     footer: {
                         text: `Category - ${command.localData.category.split('')[0].toUpperCase() + command.localData.category.split('').slice(1).join('')}`

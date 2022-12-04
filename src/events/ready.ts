@@ -22,6 +22,14 @@ export default class ReadyEvent extends Event {
             }
         }
 
-        this.client.bulkEditCommands(bulkCommands as ApplicationCommandStructure[]);
+        const res = await this.client.bulkEditCommands(bulkCommands as ApplicationCommandStructure[]);
+        for(const { id, name } of res) {
+            const cmd = this.client.localCommands.get(name);
+            if(!cmd) {
+                // wtf;
+                continue;
+            }
+            cmd.data.commandId = id;
+        }
     }
 }
