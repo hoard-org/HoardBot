@@ -16,8 +16,6 @@ export default class Help extends Command {
                 {
                     name: 'command',
                     description: 'Command you need information for.',
-                    required: false,
-                    autocomplete: false,
                     type: OptionType.STRING,
                     choices: []
                 }
@@ -39,7 +37,10 @@ export default class Help extends Command {
                 this.fields.push({
                     // Capitalize the category
                     name: category.split('')[0].toUpperCase() + category.split('').slice(1).join(''),
-                    value: `\`${[...this.client.localCommands].map(([, command]) => (command.data.name)).join('`, `')}\``
+                    value: `\`${[...this.client.localCommands]
+                        .filter(([, command]) => command.localData.category === category)
+                        .map(([, command]) => (command.data.name)).join('`, `')
+                        }\``
                 })
             })
         }

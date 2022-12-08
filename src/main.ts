@@ -1,6 +1,5 @@
 import { logger } from './util/index.js';
 import { Client } from './structures/Client.js';
-
 import { config } from './config.js'
 
 logger.info('Starting HoardBot.');

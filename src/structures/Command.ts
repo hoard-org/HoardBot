@@ -43,24 +43,41 @@ export enum ChannelTypes {
 }
 
 export type OptionData = {
+    /** Type of option. */
     type: OptionType,
+    /** 1-32 character name. */
     name: string,
+    /** 1-100 character description. */
     description: string,
+    /** If the parameter is required or optional. */
     required?: boolean,
+    /** 	Choices for STRING, INTEGER, and NUMBER types for the user to pick from, max 25. */
     choices?: {
         name: string,
         value: string | number
     }[],
+    /** If the option is a subcommand or subcommand group type, these nested options will be the parameters. */
     options?: OptionData,
+    /** If the option is an INTEGER or NUMBER type, the minimum value permitted. */
     min_value?: number,
+    /** If the option is an INTEGER or NUMBER type, the maximum value permitted */
     max_value?: number,
-    autocomplete: boolean,
+    /** For option type STRING, the minimum allowed length (minimum of 0, maximum of 6000). */
+    min_length?: number,
+    /** For option type STRING, the maximum allowed length (minimum of 1, maximum of 6000). */
+    max_length?: number,
+    /** If autocomplete interactions are enabled for this STRING, INTEGER, or NUMBER type option. */
+    autocomplete?: boolean,
+    /** If the option is a channel type, the channels shown will be restricted to these types. */
     channel_types?: ChannelTypes[]
 }
 
 export type LocalCommandData = {
+    /** Local ID for the command. Not used for much. */
     id: string;
+    /** Category the command is in. */
     category: string;
+    /** Whether the command should be ephemeral or not. */
     ephemeral: boolean;
 }
 

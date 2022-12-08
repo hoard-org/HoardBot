@@ -23,7 +23,6 @@ export default class extends Command {
 
     run(interaction: CommandInteraction) {
         let user = this.client.resolveUser(interaction.member!.id);
-
         if (interaction.data.options) {
             const option = interaction.data.options[0] as InteractionDataOptionsUser;
             user = this.client.resolveUser(option.value)

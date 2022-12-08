@@ -1,10 +1,24 @@
 import { readFile } from 'fs/promises';
 
 export type Config = {
+    /** Bot token */
     token: string;
+    /** Bot developers */
     developers: string[],
-    applicationId: string;
-    publicKey: string;
+    /** Mango settings. */
+    mongo: {
+        /** MongoDB connection string. https://www.mongodb.com/docs/manual/reference/connection-string/ */
+        uri: string;
+        /** DB to use in MongodB. */
+        db: string;
+        /** DB collection names */
+        collections: {
+            /** User collection */
+            users: string;
+            /** Guild collection */
+            guilds: string
+        }
+    }
 }
 
 let cfg: Config;

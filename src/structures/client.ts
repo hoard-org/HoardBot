@@ -7,10 +7,12 @@ import { loadFiles, logger } from "../util/index.js";
 import { type ExtendedEvent } from "./Event.js";
 import { config } from "../config.js";
 import { Command, ExtendedCommand } from "./Command.js"
+import Database from "../util/database.js";
 
 export class Client extends ErisClient {
     developers: string[] = config.developers;
     localCommands = new Map<string, Command>();
+    database?: Database;
 
     constructor(token: string, options?: ClientOptions) {
         super(token, options)
@@ -38,7 +40,7 @@ export class Client extends ErisClient {
             } else {
                 this.on(event.name, (...args) => event.run(...args));
             }
-            logger.debug(`Event '${event.name}' loaded successfully.`)
+            logger.info(`Event '${event.name}' loaded successfully.`)
         }
     }
 
@@ -50,7 +52,7 @@ export class Client extends ErisClient {
         for (const commandClass of commands) {
             const command = new commandClass(this);
             this.localCommands.set(command.data.name, command);
-            logger.debug(`Loaded command '${command.data.name}'.`)
+            logger.info(`Loaded command '${command.data.name}'.`)
         }
     }
 
@@ -62,6 +64,9 @@ export class Client extends ErisClient {
         logger.debug('Initializing Client...')
         await this.loadEvents();
         await this.loadCommands();
+        this.database = new Database()
+        await this.database.start();
+        // Connect last.
         await this.connect();
     }
 }
