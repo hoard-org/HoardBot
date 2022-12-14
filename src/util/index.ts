@@ -52,5 +52,8 @@ export const logger = {
   },
   debug: (str: string) => {
     process.stdout.write(`\u001b[30;1m[DEBUG] \u001b[37m|| ${str}\n`);
+  },
+  error: (str: string) => {
+    process.stdout.write(`\u001b[31m[ERROR] \u001b[37m|| ${str}\n`);
   }
 }

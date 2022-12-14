@@ -1,3 +1,4 @@
+import { levels as HoardLevels } from './levels.js';
 import { MongoClient } from 'mongodb';
 import { logger } from './index.js'
 import { config } from '../config.js';
@@ -35,7 +36,83 @@ export default class Database {
         }
     }
 
+    /**
+     * 
+     * @param id Guild ID;
+     * @returns {array}
+     */
+    async getLevels(id: string) {
+        const guild = await this.guilds.findOne({ _id: id })
+        if (!guild) {
+            // lol wtf
+        }
+        return guild!.data.levels
+    }
+
+    /**
+     * Check if Leveling is enabled in the guild or not.
+     * @param id Guild ID
+     * @returns {boolean}
+     */
+    async areLevelsEnabled(id: string): Promise<boolean> {
+        const guild = await this.guilds.findOne({ _id: id });
+        if (!guild) {
+            // lol wtf
+        }
+
+        return guild!.modules.levels.enabled
+    }
+
+    //. todo
+    async getLevelOptions(id: string) {
+        const guild = await this.guilds.findOne({ _id: id });
+
+        return guild!.modules.levels.options
+    }
+
+
     // Member Methods (Only thing here is levels and what not.)
+    async addXP(userID: string, guildID: string, amount: string): Promise<{
+        levelUp: boolean,
+        currentLevel: number
+    }> {
+        await this.ensureLevelObject(userID, guildID)
+
+        let levels = await this.getLevels(guildID)
+        let userLevel = levels.find((lvl) => lvl._id === userID)!;
+        const index = levels.indexOf(userLevel);
+        userLevel.xp = (parseInt(amount) + parseInt(userLevel.xp)).toString();
+        levels[index] = userLevel;
+
+        let didLevelUp = false;
+
+        if (parseInt(userLevel.xp) >= HoardLevels[parseInt(userLevel.level)].xp) {
+            userLevel.level = (parseInt(userLevel.level) + 1).toString()
+            didLevelUp = true;
+        }
+
+        await this.guilds.updateOne({ _id: guildID }, { $set: { 'data.levels': levels } })
+
+        return {
+            levelUp: didLevelUp,
+            currentLevel: parseInt(userLevel.level)
+        }
+    };
+
+    async ensureLevelObject(userID: string, guildID: string) {
+        const levels = await this.getLevels(guildID);
+        if (!levels.find((lvl) => lvl._id === userID)) {
+            levels[levels.length] = {
+                _id: userID,
+                xp: '0',
+                level: '0'
+            }
+
+            await this.guilds.updateOne({ _id: guildID }, { $set: { 'data.levels': levels } })
+        }
+    }
+
+    setLevel() { };
 
 
     // User Methods

@@ -13,7 +13,7 @@ export class Client extends ErisClient {
     developers: string[] = config.developers;
     localCommands = new Map<string, Command>();
     // Should never not exist after startup
-    db!: Database;
+    db = new Database();
 
     constructor(token: string, options?: ClientOptions) {
         super(token, options)
@@ -65,7 +65,6 @@ export class Client extends ErisClient {
         logger.debug('Initializing Client...')
         await this.loadEvents();
         await this.loadCommands();
-        this.db = new Database()
         await this.db.start();
         // Connect last.
         await this.connect();

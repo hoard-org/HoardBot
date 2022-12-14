@@ -1,4 +1,5 @@
 import { readFile } from 'fs/promises';
+import { logger } from './util/index.js';
 
 export type Config = {
     /** Bot token */
@@ -28,7 +29,7 @@ try {
     cfg = JSON.parse(file)
 } catch (e) {
     console.error(e);
-    console.log('Config invalid or does not exist. Please check.');
+    logger.error('Config invalid or does not exist. Please check.');
     process.exit(1);
 }
 

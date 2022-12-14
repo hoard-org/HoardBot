@@ -1,6 +1,6 @@
 import { logger } from './util/index.js';
-import { Client } from './structures/Client.js';
 import { config } from './config.js'
+import { Client } from './structures/Client.js';
 import './util/modifyEris.js'
 
 logger.info('Starting HoardBot.');
