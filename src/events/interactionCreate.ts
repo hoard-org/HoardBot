@@ -1,10 +1,14 @@
-import { Interaction, PingInteraction, AutocompleteInteraction, CommandInteraction } from "eris";
+import {
+    Interaction,
+    PingInteraction,
+    AutocompleteInteraction,
+    CommandInteraction
+} from "eris";
 import { Event } from "../structures/Event.js";
-import { logger } from "../util/index.js";
+import { config } from '../config.js'
 
-export default class InteractionEvent extends Event {
+export default class InteractionCreate extends Event {
     name = 'interactionCreate';
-    once = false;
 
     async run(interaction: Interaction) {
         switch (interaction.type) {
@@ -29,6 +33,12 @@ export default class InteractionEvent extends Event {
     }
 
     async doCommand(interaction: CommandInteraction) {
+        if (config.devMode.enabled && !config.devMode.allowedUsers.includes(interaction.member!.id)) {
+            await interaction.acknowledge(64);
+            interaction.createFollowup('I\'m sorry, but the bot is currently in **Developer Mode**. If you think this is an error please contact `Olykir#0193`.')
+            return; // Don't let user run commands while bot is in developer mode.
+        }
+
         try {
             const command = this.client.localCommands.get(interaction.data.name);
             if (!command) {

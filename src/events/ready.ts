@@ -2,7 +2,7 @@ import { ApplicationCommandStructure } from "eris";
 import { Event } from "../structures/Event.js";
 import { logger } from "../util/index.js";
 
-export default class ReadyEvent extends Event {
+export default class Ready extends Event {
     name = 'ready';
     once = true;
 

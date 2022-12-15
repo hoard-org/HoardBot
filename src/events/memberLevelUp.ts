@@ -1,6 +1,5 @@
-import { Channel, Message } from "eris";
+import { Message } from "eris";
 import { Event } from "../structures/Event.js";
-import { logger } from "../util/index.js";
 
 interface LevelData {
     levelUp: boolean,
@@ -9,8 +8,6 @@ interface LevelData {
 
 export default class MemberLeveledUp extends Event {
     name = 'memberLevelUp';
-    once = false;
-
 
     async run(userID: string, message: Message, { currentLevel }: LevelData) {
         const guildOptions = await message.member?.guild.getLevelOptions();

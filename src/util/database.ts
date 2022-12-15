@@ -4,10 +4,11 @@ import { logger } from './index.js'
 import { config } from '../config.js';
 import type { Collection } from 'mongodb';
 import Guild from '../structures/database/guild.js';
+import User from '../structures/database/user.js';
 
 export default class Database {
     // Non-null because start function runs immediately.
-    users!: Collection;
+    users!: Collection<User>;
     guilds!: Collection<Guild>;
 
     async start() {
@@ -63,7 +64,6 @@ export default class Database {
         return guild!.modules.levels.enabled
     }
 
-    //. todo
     async getLevelOptions(id: string) {
         const guild = await this.guilds.findOne({ _id: id });
 
@@ -72,6 +72,7 @@ export default class Database {
 
 
     // Member Methods (Only thing here is levels and what not.)
+
     async addXP(userID: string, guildID: string, amount: string): Promise<{
         levelUp: boolean,
         currentLevel: number
@@ -114,13 +115,27 @@ export default class Database {
 
     setLevel() { };
 
+    async getLevel(userID: string, guildID: string) {
+        const levels = await this.getLevels(guildID)
+        const userLevel = levels.find((lvl) => lvl._id === userID);
+
+        if (!userLevel) {
+            return null;
+        }
+
+        return userLevel
+    }
+
 
     // User Methods
 
     /**
      * Ensure that a user exists in the database
      */
-    async ensureUser(): Promise<void> {
+    async ensureUser(id: string): Promise<void> {
         // check if it exists and create it if it doesn't
+        if (await this.users.countDocuments({ _id: id }, { limit: 1 }).then((res) => res === 0)) {
+            await this.users.insertOne(new User(id));
+        }
     }
 }

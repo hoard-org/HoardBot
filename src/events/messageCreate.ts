@@ -1,12 +1,17 @@
 import { Message } from "eris";
 import { Event } from "../structures/Event.js";
+import { config } from "../config.js";
 
 export default class MessageCreate extends Event {
     name = 'messageCreate';
-    once = false;
     noXP = new Set();
 
     async run(message: Message) {
+
+        if(config.devMode.enabled && !config.devMode.allowedUsers.includes(message.author.id)) {
+            return; // User cannot access bot.
+        }
+
         if (message.author.bot || message.channel.type === 1) return;
         switch (message.type) {
             /** Guild message */

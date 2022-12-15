@@ -19,6 +19,13 @@ export type Config = {
             /** Guild collection */
             guilds: string
         }
+    },
+    /** Options for bot's developer mode. */
+    devMode: {
+        /** Whether the bot is in dev mode or not */
+        enabled: boolean,
+        /** User's allowed to use the bot in dev mode. */
+        allowedUsers: string[]
     }
 }
 

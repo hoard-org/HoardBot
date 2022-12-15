@@ -1,16 +1,18 @@
 import { Client as HrdClient } from "../structures/Client.js"
 import { Guild, User, Member, Channel, Message } from 'eris';
-import { LevelOptions } from "../structures/database/guild.js";
+import { GuildMemberLevel, LevelOptions } from "../structures/database/guild.js";
 
 
 declare module 'eris' {
     export interface User {
         _client: HrdClient
         ensure(): Promise<void>
+        getLevel(guildId: string): Promise<GuildMemberLevel | null>
     }
     export interface Member {
         _client: HrdClient;
         addXP(amount: string | number, message: Message): Promise<void>
+        getLevel(): Promise<GuildMemberLevel | null>
 
     }
     export interface Guild {
@@ -39,7 +41,11 @@ Guild.prototype.getLevelOptions = function (): Promise<LevelOptions> {
 // Add user funcs here moron.
 
 User.prototype.ensure = function (): Promise<void> {
-    return this._client.db.ensureUser();
+    return this._client.db.ensureUser(this.id);
+}
+
+User.prototype.getLevel = function (guildId: string): Promise<GuildMemberLevel | null> {
+    return this._client.db.getLevel(this.id, guildId)
 }
 
 // Add member funcs here stupid.
@@ -50,4 +56,8 @@ Member.prototype.addXP = async function (amount: string, message: Message): Prom
         this.user._client.emit('memberLevelUp', this.user.id, message, res)
     }
     return;
+}
+
+Member.prototype.getLevel = async function () {
+    return this.user._client.db.getLevel(this.user.id, this.guild.id);
 }
