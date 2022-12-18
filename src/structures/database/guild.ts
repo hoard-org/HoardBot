@@ -46,6 +46,25 @@ export interface JoinLeaveOptions {
     }
 }
 
+export interface LoggingOptions {
+    /** Actions to be logged. */
+    logChannel: string | null,
+    actions: {
+        members: {
+            /** Logs members joining. */
+            join: boolean,
+            /** Logs members leaving. */
+            leave: boolean,
+        }
+        messages: {
+            /** Logs message edits */
+            edit: boolean,
+            /** Logs message deletes */
+            delete: boolean
+        }
+    }
+}
+
 export interface GuildModules {
     levels: {
         enabled: boolean,
@@ -53,11 +72,15 @@ export interface GuildModules {
     },
     joinLeave: {
         enabled: boolean
-        options: JoinLeaveOptions
+        options: JoinLeaveOptions,
+    },
+    logging: {
+        enabled: boolean
+        options: LoggingOptions
     }
 }
 
-export default class Guild {
+export class Guild {
     data: GuildData = {
         modlog: [],
         levels: []
@@ -92,7 +115,24 @@ export default class Guild {
                     role: null
                 }
             }
+        },
+        logging: {
+            enabled: false,
+            options: {
+                logChannel: null,
+                actions: {
+                    members: {
+                        join: false,
+                        leave: false
+                    },
+                    messages: {
+                        edit: false,
+                        delete: false
+                    }
+                }
+            }
         }
     }
+
     constructor(public _id: string) { }
 }

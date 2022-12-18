@@ -7,8 +7,7 @@ export default class MessageCreate extends Event {
     noXP = new Set();
 
     async run(message: Message) {
-
-        if(config.devMode.enabled && !config.devMode.allowedUsers.includes(message.author.id)) {
+        if (config.devMode.enabled && !config.devMode.allowedUsers.includes(message.author.id)) {
             return; // User cannot access bot.
         }
 
@@ -22,8 +21,10 @@ export default class MessageCreate extends Event {
                 }
                 await message.member.guild.ensure();
 
+
+                const { levels } = await message.member.guild.getModules();
                 // Don't add XP if user has gotten XP in the last 60 seconds or if it's disabled
-                if (await message.member.guild.levelsEnabled() && !this.noXP.has(message.member.id)) {
+                if (levels.enabled && !this.noXP.has(message.member.id)) {
                     let randomAmount = Math.floor(Math.random() * 25);
                     if (randomAmount < 10) {
                         randomAmount += 10

@@ -1,16 +1,25 @@
-import { levels as HoardLevels } from './levels.js';
+import { 
+    levels as HoardLevels 
+} from './levels.js';
 import { MongoClient } from 'mongodb';
 import { logger } from './index.js'
 import { config } from '../config.js';
 import type { Collection } from 'mongodb';
-import Guild from '../structures/database/guild.js';
-import User from '../structures/database/user.js';
+import {
+    Guild,
+    GuildMemberLevel,
+    GuildModules
+} from '../structures/database/guild.js';
+import { User } from '../structures/database/user.js';
 
 export default class Database {
     // Non-null because start function runs immediately.
     users!: Collection<User>;
     guilds!: Collection<Guild>;
 
+    /**
+     * Start the database.
+     */
     async start() {
         const mongo = new MongoClient(config.mongo.uri);
         try {
@@ -51,28 +60,38 @@ export default class Database {
     }
 
     /**
-     * Check if Leveling is enabled in the guild or not.
+     * 
      * @param id Guild ID
-     * @returns {boolean}
+     * @returns {GuildLevelOptions}
      */
-    async areLevelsEnabled(id: string): Promise<boolean> {
-        const guild = await this.guilds.findOne({ _id: id });
-        if (!guild) {
-            // lol wtf
-        }
-
-        return guild!.modules.levels.enabled
-    }
-
     async getLevelOptions(id: string) {
         const guild = await this.guilds.findOne({ _id: id });
 
         return guild!.modules.levels.options
     }
 
+    /**
+     * 
+     * @param id Guild ID
+     * @returns {GuildModules}
+     */
+    async getGuildModules(id: string): Promise<GuildModules> {
+        const guild = await this.guilds.findOne({ _id: id });
+        if (!guild) {
+            // lol wtf
+        }
+        return guild!.modules
+    }
 
     // Member Methods (Only thing here is levels and what not.)
 
+    /**
+     * Add XP to a user.
+     * @param userID User ID
+     * @param guildID Guild ID
+     * @param amount Amount of XP to add
+     * @returns 
+     */
     async addXP(userID: string, guildID: string, amount: string): Promise<{
         levelUp: boolean,
         currentLevel: number
@@ -100,6 +119,11 @@ export default class Database {
         }
     };
 
+    /**
+     * Ensure that there's a level object for the user.
+     * @param userID User ID
+     * @param guildID Guild ID
+     */
     async ensureLevelObject(userID: string, guildID: string) {
         const levels = await this.getLevels(guildID);
         if (!levels.find((lvl) => lvl._id === userID)) {
@@ -113,12 +137,15 @@ export default class Database {
         }
     }
 
-    setLevel() { };
-
-    async getLevel(userID: string, guildID: string) {
+    /**
+     * Get a user's level.
+     * @param userID User ID
+     * @param guildID Guild ID
+     * @returns {GuildMemberLevel | null}
+     */
+    async getLevel(userID: string, guildID: string): Promise<GuildMemberLevel | null> {
         const levels = await this.getLevels(guildID)
         const userLevel = levels.find((lvl) => lvl._id === userID);
-
         if (!userLevel) {
             return null;
         }
