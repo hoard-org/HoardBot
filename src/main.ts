@@ -9,5 +9,5 @@ new Client(config.token, {
     // I'll add these as I go.
     intents: ['all'],
     defaultImageFormat: 'png',
-    defaultImageSize: 1024
+    defaultImageSize: 1024,
 }).start()

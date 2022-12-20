@@ -61,6 +61,18 @@ export interface LoggingOptions {
             edit: boolean,
             /** Logs message deletes */
             delete: boolean
+        },
+        modlog: {
+            /** Logs member bans. */
+            ban: boolean,
+            /** Logs softbans. */
+            softban: boolean,
+            /** Logs kicks. */
+            kick: boolean,
+            /** Logs mutes. */
+            mute: boolean,
+            /** Logs timeouts. */
+            timeout: boolean
         }
     }
 }
@@ -80,11 +92,28 @@ export interface GuildModules {
     }
 }
 
+export interface GuildOptions {
+    moderation: {
+        roles: {
+            mute: string | null;
+        }
+    }
+}
+
 export class Guild {
     data: GuildData = {
         modlog: [],
         levels: []
     }
+
+    options: GuildOptions = {
+        moderation: {
+            roles: {
+                mute: null
+            }
+        }
+    }
+
     modules: GuildModules = {
         levels: {
             enabled: true,
@@ -128,6 +157,13 @@ export class Guild {
                     messages: {
                         edit: false,
                         delete: false
+                    },
+                    modlog: {
+                        ban: false,
+                        softban: false,
+                        kick: false,
+                        mute: false,
+                        timeout: false
                     }
                 }
             }

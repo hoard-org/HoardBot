@@ -37,9 +37,21 @@ export class Client extends ErisClient {
             const event = new eventClass(this);
             // Why not tbh.
             if (event.once) {
-                this.once(event.name, (...args) => event.run(...args));
+                this.once(event.name, (...args) => {
+                    try {
+                        event.run(...args)
+                    } catch (e) {
+                        logger.error(e as any)
+                    }
+                });
             } else {
-                this.on(event.name, (...args) => event.run(...args));
+                this.on(event.name, (...args) => {
+                    try {
+                        event.run(...args)
+                    } catch (e) {
+                        logger.error(e as any);
+                    }
+                });
             }
             logger.info(`Event '${event.name}' loaded successfully.`)
         }

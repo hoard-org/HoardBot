@@ -6,6 +6,7 @@ import {
 } from "eris";
 import { Event } from "../structures/Event.js";
 import { config } from '../config.js'
+import { logger } from "../util/index.js";
 
 export default class InteractionCreate extends Event {
     name = 'interactionCreate';
@@ -65,9 +66,9 @@ export default class InteractionCreate extends Event {
             }
 
             interaction.createFollowup(res);
-        } catch (e) {
+        } catch (e: any) {
             // just in case.
-            console.error(e);
+            logger.error(e);
             interaction.acknowledge(64);
             interaction.createFollowup('An unexpected error has occured! Please contact `Olykir#0193`.')
         }

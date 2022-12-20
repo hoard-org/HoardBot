@@ -46,14 +46,18 @@ export const loadFiles = async <T>(path: string): Promise<T[]> => {
   return modules;
 };
 
+export const prefixNewLines = (str: string, replacement: string) => {
+  return str.replaceAll('\n', replacement)
+}
+
 export const logger = {
   info: (str: string) => {
-    process.stdout.write(`\u001b[35m[INFO]  \u001b[37m|| ${str}\n`);
+    process.stdout.write(`\u001b[35m[INFO]  \u001b[37m|| ${prefixNewLines(str, '\n\u001b[35m[INFO]  \u001b[37m|| ')}\n`);
   },
   debug: (str: string) => {
-    process.stdout.write(`\u001b[30;1m[DEBUG] \u001b[37m|| ${str}\n`);
+    process.stdout.write(`\u001b[30;1m[DEBUG] \u001b[37m|| ${prefixNewLines(str, '\n\u001b[30;1m[DEBUG] \u001b[37m|| ')}\n`);
   },
   error: (str: string) => {
-    process.stdout.write(`\u001b[31m[ERROR] \u001b[37m|| ${str}\n`);
+    process.stdout.write(`\u001b[31m[ERROR] \u001b[37m|| ${prefixNewLines(str, '\n\u001b[31m[ERROR] \u001b[37m|| ')}\n`);
   }
 }

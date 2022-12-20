@@ -42,7 +42,7 @@ export default class GuildMemberAdd extends Event {
                 {
                     embed: {
                         color: 65280,
-                        title: `${member.username} (${member.id}) has joined!`,
+                        title: `${member.username} \`(${member.id})\` has joined!`,
                         description: `Joined on <t:${Math.floor(Date.now() / 1000)}>`,
                         thumbnail: {
                             url: member.avatar ? member.defaultAvatar : member.avatarURL

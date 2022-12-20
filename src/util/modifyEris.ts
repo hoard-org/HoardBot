@@ -27,6 +27,7 @@ declare module 'eris' {
         _client: HrdClient
         ensure(): Promise<void>
         getModules(): Promise<GuildModules>
+        getAllLevels(): Promise<GuildMemberLevel[]>
     }
 }
 
@@ -39,6 +40,9 @@ Guild.prototype.getModules = function (): Promise<GuildModules> {
     return this._client.db.getGuildModules(this.id)
 }
 
+Guild.prototype.getAllLevels = function (): Promise<GuildMemberLevel[]> {
+    return this._client.db.getLevels(this.id);
+}
 
 // Add user funcs here moron.
 User.prototype.ensure = function (): Promise<void> {
