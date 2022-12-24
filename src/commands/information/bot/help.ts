@@ -24,7 +24,7 @@ export default class Help extends Command {
 
     }
 
-    run({ data }: CommandInteraction) {
+    run({ data, member }: CommandInteraction) {
         // Just run this once because who the fuck wants to keep running it
         if (this.categories.length === 0) {
             [...this.client.localCommands].map(([, { localData: { category } }]) => {
@@ -39,10 +39,19 @@ export default class Help extends Command {
                     name: category.split('')[0].toUpperCase() + category.split('').slice(1).join(''),
                     value: `\`${[...this.client.localCommands]
                         .filter(([, command]) => command.localData.category === category)
+                        // TODO; Hide commands that you don't have permission for.
                         .map(([, command]) => (command.data.name)).join('`, `')
                         }\``
                 })
             })
+
+            for (const field of this.fields) {
+                // Means there is nothing in it.
+                if (field.value === '``') {
+                    const index = this.fields.indexOf(field);
+                    this.fields.splice(index, 0)
+                }
+            }
         }
 
 

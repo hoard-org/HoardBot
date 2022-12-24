@@ -1,10 +1,21 @@
-import { AdvancedMessageContent, CommandInteraction } from 'eris';
+import {
+    AdvancedMessageContent,
+    AutocompleteInteraction,
+    CommandInteraction,
+    ApplicationCommandOptionChoice
+} from 'eris';
 import { Client } from './client.js'
 
 export type SlashCommandData = {
+    /** Name of slash command */
     name: string,
+    /** Description of slash command */
     description?: string;
+    /** Slash command options */
     options?: OptionData[],
+    /** Default slash command permissions */
+    default_member_permissions?: number | string;
+    /** Command ID, set by bot. */
     commandId?: string
 }
 
@@ -89,12 +100,14 @@ export abstract class Command {
         description,
         options,
         category = 'miscellaneous',
-        ephemeral = true
+        ephemeral = true,
+        default_member_permissions = 1 << 11
     }: SlashCommandConstructor) {
         this.data = {
             name,
             description,
-            options
+            options,
+            default_member_permissions: default_member_permissions.toString() // Make sure it's a string just in case.
         }
         this.localData = {
             category,
@@ -102,6 +115,9 @@ export abstract class Command {
             id: `${this.constructor.name}-${name}`
         }
     }
+
+    autocomplete?(interaction: AutocompleteInteraction): { name: string, value: string }[]
+
     abstract run(interaction: CommandInteraction, middlewareData?: unknown): AdvancedMessageContent | Promise<AdvancedMessageContent>;
 }
 

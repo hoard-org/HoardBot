@@ -7,7 +7,8 @@ import {
 } from 'eris';
 import {
     GuildMemberLevel,
-    GuildModules
+    GuildModules,
+    ModLogEntry
 } from "../structures/database/guild.js";
 
 
@@ -28,10 +29,15 @@ declare module 'eris' {
         ensure(): Promise<void>
         getModules(): Promise<GuildModules>
         getAllLevels(): Promise<GuildMemberLevel[]>
+        getModLog(): Promise<ModLogEntry[]>
     }
 }
 
 // Add guild funcs here idiot.
+Guild.prototype.getModLog = function (): Promise<ModLogEntry[]> {
+    return this._client.db.getModLog(this.id)
+}
+
 Guild.prototype.ensure = function (): Promise<void> {
     return this._client.db.ensureGuild(this.id)
 }

@@ -1,10 +1,31 @@
 export interface GuildData {
-    modlog: Modlog[];
+    modlog: ModLogEntry[];
     levels: GuildMemberLevel[]
 }
 
-export interface Modlog {
-    // todo;
+export enum ModLogActionTypes {
+    MUTE = 0,
+    KICK = 1,
+    BAN = 2,
+    SOFTBAN = 3,
+    TIMEOUT = 4,
+}
+
+export interface ModLogEntry {
+    /** Incrementing case number. */
+    case: number,
+    /** Offender ID */
+    userId: string,
+    /** Moderators ID */
+    modId: string,
+    /** Type of action on the user. */
+    type: ModLogActionTypes
+    /** Time that it happened. */
+    createdAt: Date,
+    /** Reason for the action */
+    reason?: string
+    /** Time for the action. e.g 10 minute mute.*/
+    time?: string
 }
 
 export interface GuildMemberLevel {

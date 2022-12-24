@@ -1,5 +1,5 @@
-import { 
-    levels as HoardLevels 
+import {
+    levels as HoardLevels
 } from './levels.js';
 import { MongoClient } from 'mongodb';
 import { logger } from './index.js'
@@ -8,7 +8,8 @@ import type { Collection } from 'mongodb';
 import {
     Guild,
     GuildMemberLevel,
-    GuildModules
+    GuildModules,
+    ModLogEntry
 } from '../structures/database/guild.js';
 import { User } from '../structures/database/user.js';
 
@@ -68,6 +69,17 @@ export default class Database {
         const guild = await this.guilds.findOne({ _id: id });
 
         return guild!.modules.levels.options
+    }
+
+    /**
+     * 
+     * @param id Guild ID;
+     * @returns {ModLogEntry[]}
+     */
+    async getModLog(id: string): Promise<ModLogEntry[]> {
+        const guild = await this.guilds.findOne({ _id: id });
+
+        return guild!.data.modlog
     }
 
     /**

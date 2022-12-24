@@ -68,13 +68,26 @@ export default class InteractionCreate extends Event {
             interaction.createFollowup(res);
         } catch (e: any) {
             // just in case.
+            if (!interaction.acknowledged) {
+                interaction.acknowledge(64);
+            }
             logger.error(e);
-            interaction.acknowledge(64);
             interaction.createFollowup('An unexpected error has occured! Please contact `Olykir#0193`.')
         }
     }
 
     doComponent() { } // TODO;
 
-    doAutocomplete(interaction: AutocompleteInteraction) { } // TODO;
+    async doAutocomplete(interaction: AutocompleteInteraction) {
+        const command = this.client.localCommands.get(interaction.data.name);
+
+        if (!command) {
+            throw new Error('No command found. Autocomplete interaction.')
+        };
+
+        if (!command?.autocomplete) return;
+
+        const res = await command.autocomplete(interaction);
+        interaction.acknowledge(res);
+    }
 }
