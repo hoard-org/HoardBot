@@ -5,23 +5,28 @@ import { AutocompleteInteraction, CommandInteraction, InteractionDataOptions, In
 const TIME_CODES = [
     {
         name: 'day',
-        labels: ['d', 'day'],
+        labels: ['day', 'd'],
         time: 8.64e7 // One day in MS
     },
     {
         name: 'hour',
-        labels: ['h', 'hour'],
+        labels: ['hour', 'h'],
         time: 3.6e6
     },
     {
         name: 'minute',
-        labels: ['m', 'min', 'minute'],
+        labels: ['minute', 'min', 'm'],
         time: 6e4
     },
     {
         name: 'second',
-        labels: ['s', 'sec', 'second'],
+        labels: ['second', 'sec', 's'],
         time: 1e3
+    },
+    {
+        name: 'millisecond',
+        labels: ['millisecond', 'milli', 'ms'],
+        time: 1
     }
 ]
 
@@ -44,36 +49,78 @@ export default class Mute extends Command {
                     required: false,
                     description: 'Time for the mute.',
                     autocomplete: true
+                },
+                {
+                    type: OptionType.STRING,
+                    name: 'reason',
+                    required: false,
+                    description: 'Reason for muting the user.'
                 }
             ],
             default_member_permissions: 1 << 1
         })
     }
 
+    // todo; completely redo this. It works but it's so garbage.
     autocomplete(interaction: AutocompleteInteraction) {
-        // todo; type this
-        const option = (interaction.data.options.find((s) => s.name === 'time')) as InteractionDataOptionsString
-        console.log(option);
+        const option = interaction.data.options.find((opt) => opt.name === 'time') as InteractionDataOptionsString
+
+        const Autocompletes: {
+            value: string,
+            name: string
+        }[] = [];
 
         if (option.value === '') {
-            return [
-                {
-                    value: TIME_CODES.find((t) => t.name === 'day')!.time.toString(),
-                    name: 'One Day (default)'
-                }
-            ]
+            for (const code of TIME_CODES) {
+                Autocompletes.push({
+                    value: code.time.toString(),
+                    name: `1 ${code.name.split('')[0].toUpperCase() + code.name.split('').slice(1).join('')}`
+                })
+            }
         }
 
-        const increments = option.value.split(' ');
+        const ParseTest = RegExp(/^(\d+)(?:\.(\d+)?)?\s?(.+?)$/);
 
-        // todo; finish this.
+        const PossibleCodes = option.value.split(' ');
 
-        return [
-            {
-                value: 'test',
-                name: 'test'
-            }
-        ]
+        for (const PossibleCode of PossibleCodes) {
+            const CodeIndex = PossibleCodes.indexOf(PossibleCode);
+            if (ParseTest.test(PossibleCode)) {
+                const Groups = ParseTest.exec(PossibleCode);
+                if (!Groups) {
+                    continue;
+                }
+                const TimeCode = TIME_CODES.find((code) => code.labels.includes(Groups[3]))
+                if (!TimeCode) {
+                    continue;
+                }
+
+                if (Autocompletes.length === 0) {
+                    Autocompletes.push({
+                        name: `${Groups[1]} ${TimeCode.name.split('')[0].toUpperCase() + TimeCode.name.split('').slice(1).join('')}`,
+                        value: (parseInt(Groups[1]) * TimeCode.time).toString()
+                    })
+                } else {
+                    for (const Autocompleted of Autocompletes) {
+                        const index = Autocompletes.indexOf(Autocompleted);
+                        Autocompletes[index].name += ` ${Groups[1]} ${TimeCode.name.split('')[0].toUpperCase() + TimeCode.name.split('').slice(1).join('')}`
+                        Autocompletes[index].value = (parseInt(Autocompletes[index].value) + (parseInt(Groups[1]) * TimeCode.time)).toString()
+                    }
+                }
+
+                console.log(Autocompletes);
+            } else if (TIME_CODES.find((code) => code.labels.includes(PossibleCodes[CodeIndex + 1]?.toLowerCase())) && !isNaN(parseInt(PossibleCode))) {
+                const TimeCode = TIME_CODES.find((code) => code.labels.includes(PossibleCodes[CodeIndex + 1].toLowerCase()))!
+                if (Autocompletes.length === 0) {
+                    Autocompletes.push({
+                        name: `${PossibleCode} ${TimeCode.name}`,
+                        value: (parseInt(PossibleCode) * TimeCode.time).toString()
+                    })
+                }
+            };
+            continue;
+        }
+        return Autocompletes
     }
 
     async run(interaction: CommandInteraction) {
@@ -86,10 +133,15 @@ export default class Mute extends Command {
                 content: 'User not found!'
             }
         }
-        let time = interaction.data.options.find((opt) => opt.name === 'time') as InteractionDataOptionsString;
 
-        console.log(user);
-        console.log(time);
+        if (user.bot) {
+            return {
+                content: 'You cannot mute a bot!'
+            }
+        }
+
+        let time = interaction.data.options.find((opt) => opt.name === 'time') as InteractionDataOptionsString;
+        let reason = interaction.data.options.find((opt) => opt.name === 'reason') as InteractionDataOptionsString
 
         if (!time) {
             time = {
@@ -104,7 +156,7 @@ export default class Mute extends Command {
         }
 
         return {
-            content: `User: ${user.username}\n Time: ${time.value}`
+            content: `User: ${user.username}\n Time: ${time.value}\nReason: ${reason.value}`
         }
     }
 }

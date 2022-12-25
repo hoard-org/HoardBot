@@ -2,7 +2,6 @@ import {
     AdvancedMessageContent,
     AutocompleteInteraction,
     CommandInteraction,
-    ApplicationCommandOptionChoice
 } from 'eris';
 import { Client } from './client.js'
 

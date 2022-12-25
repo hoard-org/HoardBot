@@ -9,7 +9,8 @@ import {
     Guild,
     GuildMemberLevel,
     GuildModules,
-    ModLogEntry
+    ModLogEntry,
+    ModLogActionTypes
 } from '../structures/database/guild.js';
 import { User } from '../structures/database/user.js';
 
@@ -80,6 +81,40 @@ export default class Database {
         const guild = await this.guilds.findOne({ _id: id });
 
         return guild!.data.modlog
+    }
+
+    async addModLog({
+        guildId,
+        offenderId,
+        modId,
+        time,
+        reason,
+        actionType
+    }: {
+        guildId: string,
+        offenderId: string,
+        modId: string,
+        time?: string,
+        actionType: ModLogActionTypes,
+        reason: string
+    }) {
+        const currentModlog = await this.getModLog(guildId);
+        const nextCase = currentModlog.length === 0 ? 1 : currentModlog[currentModlog.length].case++;
+
+        await this.guilds.updateOne({ _id: guildId }, {
+            $set: {
+                'data.modlog': [...currentModlog, {
+                    case: nextCase,
+                    userId: offenderId,
+                    modId: modId,
+                    type: actionType,
+                    createdAt: Date.now(),
+                    reason: reason,
+                    time: time
+                }]
+            }
+        })
+
     }
 
     /**

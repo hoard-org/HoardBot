@@ -21,7 +21,7 @@ export interface ModLogEntry {
     /** Type of action on the user. */
     type: ModLogActionTypes
     /** Time that it happened. */
-    createdAt: Date,
+    createdAt: number,
     /** Reason for the action */
     reason?: string
     /** Time for the action. e.g 10 minute mute.*/
